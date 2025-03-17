@@ -1,3 +1,5 @@
+//Submission: Rohit Shrestha - 3502400
+
 public class Sensor {
     private String type; // possible values -> temperature, pressure, windspeed, humidity
     private int grade; // possible values -> 1 to 5, 1 being the highest and 5 being the lowest grade
