@@ -132,8 +132,6 @@ public class Uav {
     }
 
     public void testUav() {
-        System.out.println("========================================");
-
         System.out.println("Test Case 1: verify getName method");
         System.out.println("Expected output: Test Uav");
         System.out.println("Actual output: " + getName());
