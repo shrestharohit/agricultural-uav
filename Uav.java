@@ -132,25 +132,37 @@ public class Uav {
     }
 
     public void testUav() {
+        System.out.println("========================================");
+
         System.out.println("Test Case 1: verify getName method");
         System.out.println("Expected output: Test Uav");
         System.out.println("Actual output: " + getName());
+
+        System.out.println("========================================");
 
         System.out.println("Test Case 2: verify getOperationalCost method");
         System.out.println("Expected output: 100.0");
         System.out.println("Actual output: " + getOperationalCost());
 
+        System.out.println("========================================");
+
         System.out.println("Test Case 3: verify getAvailability method");
         System.out.println("Expected output: 1");
         System.out.println("Actual output: " + getAvailability());
+
+        System.out.println("========================================");
 
         System.out.println("Test Case 4: verify adding sensor successfully");
         System.out.println("Expected output: Sensor has been added");
         System.out.println("Actual output: " + addSensor("temperature", 1, 10));
 
+        System.out.println("========================================");
+
         System.out.println("Test Case 5: verify removing sensor successfully");
         System.out.println("Expected output: 10 Temperature sensor has been removed from Test Uav.");
         System.out.println("Actual output: " + removeSensor("temperature", 10));
+
+        System.out.println("========================================");
 
         Sensor testSensor = new Sensor("temperature", 3, 10);
 
@@ -158,22 +170,29 @@ public class Uav {
         System.out.println("Expected output: temperature");
         System.out.println("Actual output: " + testSensor.getType());
 
+        System.out.println("========================================");
+
         System.out.println("Test Case 7: verify getGrade method in sensor");
         System.out.println("Expected output: 3");
         System.out.println("Actual output: " + testSensor.getGrade());
 
+        System.out.println("========================================");
+
         System.out.println("Test Case 8: verify getQuantity method");
         System.out.println("Expected output: 10");
         System.out.println("Actual output: " + testSensor.getQuantity());
+
+        System.out.println("========================================");
 
         System.out.println("Test Case 9: verify setQuantity method");
         System.out.println("Expected output: 20");
         testSensor.setQuantity(20);
         System.out.println("Actual output: " + testSensor.getQuantity());
 
+        System.out.println("========================================");
+
         System.out.println("Test Case 10: verify sensorDetails method");
         System.out.println("Expected output: Temperature sensor, Grade 3, Quantity 20");
         System.out.println("Actual output: " + testSensor.sensorDetails());
-
     }
 }
