@@ -1,14 +1,13 @@
 //Submission: Rohit Shrestha - 3502400
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import javax.swing.*;
 
 public class UavInterface {
-    // Built the system to support 4 uavs only at max and defined the variables to
-    // store them since we cannot use arrays yet.
-    private Uav uav1 = null;
-    private Uav uav2 = null;
-    private Uav uav3 = null;
-    private Uav uav4 = null;
+    private Uav[] uavs = new Uav[4];
 
     public void run() {
         while (true) {
@@ -22,7 +21,10 @@ public class UavInterface {
                             "5. Find Best UAV for Task\n" +
                             "6. List Sensors on UAV\n" +
                             "7. List UAVs with Sensor Type\n" +
-                            "8. Exit\n",
+                            "8. List all UAVs\n" +
+                            "9. Export UAV details\n" +
+                            "10. Test Cases\n" +
+                            "11. Exit\n",
                     "UAV Management",
                     JOptionPane.QUESTION_MESSAGE);
 
@@ -54,27 +56,48 @@ public class UavInterface {
                         listUAVsWithSensorType();
                         break;
                     case 8:
+                        listUAVs();
+                        break;
+                    case 9:
+                        exportUAVsInFile();
+                        break;
+                    case 10:
+                        testUAV();
+                        break;
+                    case 11:
                         System.exit(0);
                         break;
                     default:
                         JOptionPane.showMessageDialog(null,
                                 "Invalid selection! Please enter a number between 1 and 8.");
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException err) {
                 JOptionPane.showMessageDialog(null, "Invalid input! Please enter a number between 1 and 8.");
             }
         }
     }
 
     private boolean isUAVNameTaken(String name) {
-        return (uav1 != null && uav1.getName().equals(name)) ||
-                (uav2 != null && uav2.getName().equals(name)) ||
-                (uav3 != null && uav3.getName().equals(name)) ||
-                (uav4 != null && uav4.getName().equals(name));
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null && uavs[i].getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getUavCount() {
+        int count = 0;
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void addUAV() {
-        if (uav1 != null && uav2 != null && uav3 != null && uav4 != null) {
+        if (getUavCount() >= 4) {
             JOptionPane.showMessageDialog(null, "You already have added 4 UAVs. Cannot add more.");
         } else {
             String name = JOptionPane.showInputDialog("Enter UAV name:");
@@ -110,37 +133,30 @@ public class UavInterface {
                 }
             }
 
-            if (uav1 == null) {
-                uav1 = new Uav(name, operationalCost, availability);
-                JOptionPane.showMessageDialog(null, "UAV added: " + name);
-            } else if (uav2 == null) {
-                uav2 = new Uav(name, operationalCost, availability);
-                JOptionPane.showMessageDialog(null, "UAV added: " + name);
-            } else if (uav3 == null) {
-                uav3 = new Uav(name, operationalCost, availability);
-                JOptionPane.showMessageDialog(null, "UAV added: " + name);
-            } else if (uav4 == null) {
-                uav4 = new Uav(name, operationalCost, availability);
-                JOptionPane.showMessageDialog(null, "UAV added: " + name);
+            for (int i = 0; i < uavs.length; i++) {
+                if (uavs[i] == null) {
+                    uavs[i] = new Uav(name, operationalCost, availability);
+                    JOptionPane.showMessageDialog(null, "UAV added: " + name);
+                    break;
+                }
             }
         }
     }
 
     private void removeUAV() {
         String name = JOptionPane.showInputDialog("Enter UAV name to remove:");
-        if (uav1 != null && uav1.getName().equals(name)) {
-            uav1 = null;
-            JOptionPane.showMessageDialog(null, "UAV removed: " + name);
-        } else if (uav2 != null && uav2.getName().equals(name)) {
-            uav2 = null;
-            JOptionPane.showMessageDialog(null, "UAV removed: " + name);
-        } else if (uav3 != null && uav3.getName().equals(name)) {
-            uav3 = null;
-            JOptionPane.showMessageDialog(null, "UAV removed: " + name);
-        } else if (uav4 != null && uav4.getName().equals(name)) {
-            uav4 = null;
-            JOptionPane.showMessageDialog(null, "UAV removed: " + name);
-        } else {
+        boolean found = false;
+
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null && uavs[i].getName().equals(name)) {
+                uavs[i] = null;
+                JOptionPane.showMessageDialog(null, "UAV removed: " + name);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
             JOptionPane.showMessageDialog(null, "UAV not found.");
         }
     }
@@ -149,14 +165,11 @@ public class UavInterface {
         String uavName = JOptionPane.showInputDialog("Enter the name of the UAV to which you want to add the sensor:");
 
         Uav selectedUAV = null;
-        if (uav1 != null && uav1.getName().equals(uavName)) {
-            selectedUAV = uav1;
-        } else if (uav2 != null && uav2.getName().equals(uavName)) {
-            selectedUAV = uav2;
-        } else if (uav3 != null && uav3.getName().equals(uavName)) {
-            selectedUAV = uav3;
-        } else if (uav4 != null && uav4.getName().equals(uavName)) {
-            selectedUAV = uav4;
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null && uavs[i].getName().equals(uavName)) {
+                selectedUAV = uavs[i];
+                break;
+            }
         }
 
         if (selectedUAV == null) {
@@ -211,14 +224,11 @@ public class UavInterface {
         String uavName = JOptionPane.showInputDialog("Enter the name of the UAV to which you want to add the sensor:");
 
         Uav selectedUAV = null;
-        if (uav1 != null && uav1.getName().equals(uavName)) {
-            selectedUAV = uav1;
-        } else if (uav2 != null && uav2.getName().equals(uavName)) {
-            selectedUAV = uav2;
-        } else if (uav3 != null && uav3.getName().equals(uavName)) {
-            selectedUAV = uav3;
-        } else if (uav4 != null && uav4.getName().equals(uavName)) {
-            selectedUAV = uav4;
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null && uavs[i].getName().equals(uavName)) {
+                selectedUAV = uavs[i];
+                break;
+            }
         }
 
         if (selectedUAV == null) {
@@ -298,60 +308,21 @@ public class UavInterface {
         double lowestCost = 0;
         int bestAvailability = 0;
 
-        // Here, I defined the bestUav and parsed through each UAVs available to find if
-        // the requirement suits any UAV in particular and then filter the best fit
-        // among
-        // them based on the operational cost and the availabilty of the UAV
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null) {
+                Sensor sensor = uavs[i].validateSensorAvailability(sensorType, grade, quantity);
 
-        // Check if uav1 is a match
-        if (uav1 != null) {
-            Sensor sensor1 = uav1.validateSensorAvailability(sensorType, grade, quantity);
-            if (sensor1 != null) {
+                if (sensor != null) {
+                    double operationalCost = uavs[i].getOperationalCost();
+                    int availability = uavs[i].getAvailability();
 
-                bestUav = uav1;
-                lowestCost = uav1.getOperationalCost();
-                bestAvailability = uav1.getAvailability();
-            }
-        }
-
-        // Check if uav2 is a match
-        if (uav2 != null) {
-            Sensor sensor2 = uav2.validateSensorAvailability(sensorType, grade, quantity);
-
-            if (sensor2 != null) {
-                if (uav2.getOperationalCost() < lowestCost
-                        || uav2.getOperationalCost() == lowestCost && uav2.getAvailability() < bestAvailability) {
-                    bestUav = uav2;
-                    lowestCost = uav2.getOperationalCost();
-                    bestAvailability = uav2.getAvailability();
-                }
-            }
-        }
-
-        // Check if uav3 is a match
-        if (uav3 != null) {
-            Sensor sensor3 = uav3.validateSensorAvailability(sensorType, grade, quantity);
-
-            if (sensor3 != null) {
-                if (uav3.getOperationalCost() < lowestCost
-                        || uav3.getOperationalCost() == lowestCost && uav3.getAvailability() < bestAvailability) {
-                    bestUav = uav3;
-                    lowestCost = uav3.getOperationalCost();
-                    bestAvailability = uav3.getAvailability();
-                }
-            }
-        }
-
-        // Check if uav4 is a match
-        if (uav4 != null) {
-            Sensor sensor4 = uav4.validateSensorAvailability(sensorType, grade, quantity);
-
-            if (sensor4 != null) {
-                if (uav4.getOperationalCost() < lowestCost
-                        || uav4.getOperationalCost() == lowestCost && uav4.getAvailability() < bestAvailability) {
-                    bestUav = uav4;
-                    lowestCost = uav4.getOperationalCost();
-                    bestAvailability = uav4.getAvailability();
+                    if (operationalCost < lowestCost
+                            || (operationalCost == lowestCost && availability < bestAvailability)) {
+                        bestUav = uavs[i];
+                        lowestCost = uavs[i].getOperationalCost();
+                        bestAvailability = uavs[i].getAvailability();
+                        ;
+                    }
                 }
             }
         }
@@ -370,14 +341,11 @@ public class UavInterface {
         String uavName = JOptionPane.showInputDialog("Enter the name of the UAV to which you want to add the sensor:");
 
         Uav selectedUAV = null;
-        if (uav1 != null && uav1.getName().equals(uavName)) {
-            selectedUAV = uav1;
-        } else if (uav2 != null && uav2.getName().equals(uavName)) {
-            selectedUAV = uav2;
-        } else if (uav3 != null && uav3.getName().equals(uavName)) {
-            selectedUAV = uav3;
-        } else if (uav4 != null && uav4.getName().equals(uavName)) {
-            selectedUAV = uav4;
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null && uavs[i].getName().equals(uavName)) {
+                selectedUAV = uavs[i];
+                break;
+            }
         }
 
         if (selectedUAV == null) {
@@ -404,24 +372,79 @@ public class UavInterface {
 
         String result = "";
 
-        if (uav1 != null) {
-            result = result + uav1.filterBySensor(sensorType);
-        }
-        if (uav2 != null) {
-            result = result + uav2.filterBySensor(sensorType);
-        }
-        if (uav3 != null) {
-            result = result + uav3.filterBySensor(sensorType);
-        }
-        if (uav4 != null) {
-            result = result + uav4.filterBySensor(sensorType);
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null) {
+                result = result + uavs[i].filterBySensor(sensorType);
+            }
         }
 
         if (result == "") {
-            JOptionPane.showMessageDialog(null, "No UAVs found with the specified sensor.");
-        } else {
-            JOptionPane.showMessageDialog(null, result);
+            result = "No UAVs found with the specified sensor.";
         }
+        JOptionPane.showMessageDialog(null, result);
+    }
+
+    private void sortUAVAlphabetically() {
+        for (int i = 0; i < uavs.length - 1; i++) {
+            for (int j = i + 1; j < uavs.length; j++) {
+                if (uavs[i] != null && uavs[j] != null) {
+                    if (uavs[i].getName().compareTo(uavs[j].getName()) > 0) {
+                        Uav temp = uavs[i];
+                        uavs[i] = uavs[j];
+                        uavs[j] = temp;
+                    }
+                }
+            }
+        }
+    }
+
+    private void listUAVs() {
+        String result = "";
+
+        sortUAVAlphabetically();
+
+        for (int i = 0; i < uavs.length; i++) {
+            if (uavs[i] != null) {
+                result = result + uavs[i].getUavDetails();
+            }
+        }
+
+        if (result == "") {
+            result = "No UAVs exists.";
+        }
+        JOptionPane.showMessageDialog(null, result);
+
+    }
+
+    private void exportUAVsInFile() {
+        String filePath = "agricultral_uavs_using_arrays.txt";
+        File file = new File(filePath);
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            boolean uavExists = false;
+
+            sortUAVAlphabetically();
+
+            for (int i = 0; i < uavs.length; i++) {
+                if (uavs[i] != null) {
+                    writer.println(uavs[i].getUavDetails());
+                    uavExists = true;
+                }
+            }
+
+            if (!uavExists) {
+                writer.println("No UAV exists.");
+            }
+
+            JOptionPane.showMessageDialog(null, "UAV data successfully exported to " + filePath);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "An error occurred while writing to the file.");
+        }
+    }
+
+    private void testUAV() {
+        Uav testingUav = new Uav("Test Uav", 100, 1);
+        testingUav.testUav();
     }
 
     public static void main(String[] args) {
