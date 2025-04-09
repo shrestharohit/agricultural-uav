@@ -316,12 +316,18 @@ public class UavInterface {
                     double operationalCost = uavs[i].getOperationalCost();
                     int availability = uavs[i].getAvailability();
 
-                    if (operationalCost < lowestCost
-                            || (operationalCost == lowestCost && availability < bestAvailability)) {
+                    if (i == 0) {
                         bestUav = uavs[i];
                         lowestCost = uavs[i].getOperationalCost();
                         bestAvailability = uavs[i].getAvailability();
-                        ;
+                    } else {
+                        if (operationalCost < lowestCost
+                                || (operationalCost == lowestCost && availability > bestAvailability)) {
+                            bestUav = uavs[i];
+                            lowestCost = uavs[i].getOperationalCost();
+                            bestAvailability = uavs[i].getAvailability();
+                            ;
+                        }
                     }
                 }
             }
