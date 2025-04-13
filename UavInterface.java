@@ -423,7 +423,7 @@ public class UavInterface {
     }
 
     private void exportUAVsInFile() {
-        String filePath = "agricultral_uavs_using_arrays.txt";
+        String filePath = "agricultural_uavs.txt";
         File file = new File(filePath);
 
         try (PrintWriter writer = new PrintWriter(file)) {
